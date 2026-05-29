@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard Biologi — Ekosistem & Perubahan Lingkungan</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --success: #34d399;
+    --danger: #f87171;
+    --warn: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+  }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; text-align: center; }
+  .subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; text-align: center; }
+  .progress-wrap { width: 100%; max-width: 520px; margin-bottom: 12px; }
+  .progress-bar-bg { background: #334155; border-radius: 999px; height: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0%; transition: width 0.3s ease; border-radius: 999px; }
+  .progress-text { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+  .scene { perspective: 1000px; width: 100%; max-width: 520px; height: 320px; margin: 16px 0; cursor: pointer; }
+  .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .card.is-flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+    border-radius: 16px; padding: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35); border: 1px solid #334155;
+  }
+  .card-front { background: var(--card-bg); }
+  .card-back { background: linear-gradient(135deg, #1e293b, #0f172a); transform: rotateY(180deg); }
+  .card-number { position: absolute; top: 16px; left: 20px; font-size: 0.75rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+  .card-category { position: absolute; top: 16px; right: 20px; font-size: 0.7rem; color: var(--accent); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; background: rgba(56,189,248,0.1); padding: 4px 10px; border-radius: 999px; }
+  .question { font-size: 1.25rem; font-weight: 600; text-align: center; line-height: 1.4; }
+  .answer { font-size: 1.15rem; font-weight: 500; text-align: center; line-height: 1.5; color: #e2e8f0; }
+  .hint { position: absolute; bottom: 16px; font-size: 0.75rem; color: var(--muted); }
+  .controls { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    border: none; padding: 10px 18px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary { background: var(--accent); color: #0f172a; }
+  .btn-success { background: var(--success); color: #064e3b; }
+  .btn-danger { background: var(--danger); color: #450a0a; }
+  .btn-ghost { background: transparent; color: var(--muted); border: 1px solid #334155; }
+  .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+  .stats { display: flex; gap: 16px; margin-top: 16px; font-size: 0.8rem; color: var(--muted); }
+  .stat span { color: var(--text); font-weight: 700; }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
+  .overlay.active { display: flex; }
+  .overlay-box { background: var(--card-bg); padding: 32px; border-radius: 16px; text-align: center; max-width: 400px; width: 90%; border: 1px solid #334155; }
+  .overlay-box h2 { margin-bottom: 12px; }
+  .overlay-box p { color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; margin-left: 6px; }
+  .badge-mastered { background: rgba(52,211,153,0.15); color: var(--success); }
+  .badge-review { background: rgba(248,113,113,0.15); color: var(--danger); }
+  @media (max-width: 480px) {
+    .scene { height: 280px; }
+    .question { font-size: 1.1rem; }
+    .answer { font-size: 1rem; }
+  }
+</style>
+<base target="_blank">
+</head>
+<body>
+<h1>Flashcard Biologi</h1>
+<div class="subtitle">Ekosistem, Pencemaran & Perubahan Lingkungan</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <div class="progress-text"><span id="progressLabel">1 / 50</span><span id="progressPct">2%</span></div>
+</div>
+
+<div class="scene" id="scene" onclick="flipCard()">
+  <div class="card" id="card">
+    <div class="card-face card-front">
+      <div class="card-number" id="cardNum">#01</div>
+      <div class="card-category" id="cardCat">Ekosistem</div>
+      <div class="question" id="cardQ">Loading...</div>
+      <div class="hint">Klik kartu atau tekan Spasi untuk balik</div>
+    </div>
+    <div class="card-face card-back">
+      <div class="card-number" id="cardNumBack">#01</div>
+      <div class="answer" id="cardA">Loading...</div>
+      <div class="hint">Klik kartu atau tekan Spasi untuk balik</div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn btn-ghost" onclick="prevCard()">← Sebelumnya</button>
+  <button class="btn btn-success" onclick="markMastered()">✓ Sudah Hafal</button>
+  <button class="btn btn-danger" onclick="markReview()">✗ Belum Hafal</button>
+  <button class="btn btn-primary" onclick="nextCard()">Selanjutnya →</button>
+  <button class="btn btn-ghost" onclick="shuffleCards()">🔀 Acak</button>
+</div>
+
+<div class="stats">
+  <div class="stat">Hafal: <span id="statMastered">0</span></div>
+  <div class="stat">Review: <span id="statReview">0</span></div>
+  <div class="stat">Sisa: <span id="statRemaining">50</span></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-box">
+    <h2>🎉 Selesai!</h2>
+    <p id="overlayMsg">Kamu sudah menjawab semua kartu.</p>
+    <button class="btn btn-primary" onclick="resetSession()">Ulangi Sesi</button>
+    <button class="btn btn-ghost" onclick="closeOverlay()">Tutup</button>
+  </div>
+</div>
+
+<script>
+const rawCards = [{"q": "Apa yang dimaksud ekosistem?", "a": "Hubungan timbal balik antara makhluk hidup dengan lingkungan biotik dan abiotiknya."}, {"q": "Apa perbedaan biotik dan abiotik?", "a": "Biotik = makhluk hidup. Abiotik = benda tak hidup."}, {"q": "Contoh komponen abiotik?", "a": "Air, cahaya matahari, suhu, tanah, pH, oksigen."}, {"q": "Apa itu produsen?", "a": "Organisme autotrof yang membuat makanan sendiri melalui fotosintesis."}, {"q": "Contoh produsen?", "a": "Tumbuhan hijau dan fitoplankton."}, {"q": "Apa itu konsumen?", "a": "Organisme heterotrof yang memperoleh makanan dari organisme lain."}, {"q": "Apa itu dekomposer?", "a": "Organisme pengurai sisa makhluk hidup menjadi zat anorganik."}, {"q": "Contoh dekomposer?", "a": "Bakteri dan jamur."}, {"q": "Apa itu detritivor?", "a": "Organisme pemakan sisa-sisa organisme mati."}, {"q": "Contoh detritivor?", "a": "Cacing tanah dan rayap."}, {"q": "Apa itu populasi?", "a": "Sekumpulan individu sejenis di suatu tempat tertentu."}, {"q": "Apa itu komunitas?", "a": "Kumpulan berbagai populasi yang saling berinteraksi."}, {"q": "Apa itu biom?", "a": "Kumpulan ekosistem luas dengan iklim dan organisme khas."}, {"q": "Contoh biom?", "a": "Savana, tundra, gurun, hutan hujan tropis."}, {"q": "Apa yang dimaksud habitat?", "a": "Tempat hidup alami suatu organisme."}, {"q": "Apa itu relung (niche)?", "a": "Peran atau fungsi organisme dalam ekosistem."}, {"q": "Apa itu rantai makanan?", "a": "Proses perpindahan energi melalui makan dan dimakan."}, {"q": "Apa urutan rantai makanan?", "a": "Produsen → Konsumen → Pengurai."}, {"q": "Apa itu jaring-jaring makanan?", "a": "Gabungan beberapa rantai makanan yang saling berhubungan."}, {"q": "Mengapa energi makin berkurang pada tingkat trofik lebih tinggi?", "a": "Karena energi digunakan untuk aktivitas dan hilang sebagai panas."}, {"q": "Apa itu pencemaran lingkungan?", "a": "Masuknya zat pencemar yang menurunkan kualitas lingkungan."}, {"q": "Apa itu polutan?", "a": "Zat penyebab pencemaran."}, {"q": "Apa itu limbah biodegradable?", "a": "Limbah yang mudah diuraikan mikroorganisme."}, {"q": "Contoh limbah biodegradable?", "a": "Sisa makanan dan daun."}, {"q": "Apa itu limbah nonbiodegradable?", "a": "Limbah yang sulit diuraikan."}, {"q": "Contoh limbah nonbiodegradable?", "a": "Plastik dan logam berat."}, {"q": "Penyebab pencemaran air?", "a": "Limbah rumah tangga, industri, pupuk, dan pestisida."}, {"q": "Dampak pencemaran air?", "a": "Kematian organisme air dan berkurangnya oksigen."}, {"q": "Apa itu eutrofikasi?", "a": "Ledakan pertumbuhan alga akibat kelebihan nitrat dan fosfat."}, {"q": "Dampak eutrofikasi?", "a": "Oksigen air berkurang dan ikan mati."}, {"q": "Penyebab pencemaran udara?", "a": "Asap kendaraan, industri, dan pembakaran bahan bakar fosil."}, {"q": "Apa dampak karbon monoksida (CO)?", "a": "Menghambat pengikatan oksigen oleh darah."}, {"q": "Apa dampak sulfur dioksida (SO₂)?", "a": "Menyebabkan hujan asam."}, {"q": "Apa fungsi lapisan ozon?", "a": "Melindungi bumi dari sinar ultraviolet."}, {"q": "Zat perusak ozon?", "a": "CFC (klorofluorokarbon)."}, {"q": "Apa penyebab efek rumah kaca?", "a": "Peningkatan gas CO₂ di atmosfer."}, {"q": "Dampak efek rumah kaca?", "a": "Pemanasan global."}, {"q": "Penyebab pencemaran tanah?", "a": "Sampah, pestisida, dan limbah industri."}, {"q": "Apa itu remediasi?", "a": "Proses membersihkan tanah tercemar."}, {"q": "Apa manfaat daur ulang?", "a": "Mengurangi limbah dan pencemaran lingkungan."}, {"q": "Faktor manusia yang menyebabkan perubahan lingkungan?", "a": "Penebangan hutan, pertambangan, pembangunan."}, {"q": "Dampak penebangan hutan?", "a": "Banjir, longsor, hilangnya habitat."}, {"q": "Dampak pertambangan liar?", "a": "Kerusakan tanah dan pencemaran."}, {"q": "Apa itu monokultur?", "a": "Penanaman satu jenis tanaman pada lahan luas."}, {"q": "Faktor alam penyebab perubahan lingkungan?", "a": "Gempa bumi, tsunami, gunung meletus."}, {"q": "Apa itu suksesi?", "a": "Perubahan komunitas secara bertahap menuju klimaks."}, {"q": "Apa itu suksesi primer?", "a": "Suksesi pada daerah baru tanpa kehidupan sebelumnya."}, {"q": "Contoh suksesi primer?", "a": "Daerah bekas letusan gunung api."}, {"q": "Apa itu suksesi sekunder?", "a": "Suksesi pada daerah yang sebelumnya sudah dihuni."}, {"q": "Contoh suksesi sekunder?", "a": "Hutan bekas kebakaran."}];
+
+const categories = [
+  "Ekosistem","Ekosistem","Ekosistem","Ekosistem","Ekosistem",
+  "Ekosistem","Ekosistem","Ekosistem","Ekosistem","Ekosistem",
+  "Ekosistem","Ekosistem","Ekosistem","Ekosistem","Ekosistem",
+  "Ekosistem","Ekosistem","Ekosistem","Ekosistem","Ekosistem",
+  "Pencemaran","Pencemaran","Pencemaran","Pencemaran","Pencemaran",
+  "Pencemaran","Pencemaran","Pencemaran","Pencemaran","Pencemaran",
+  "Pencemaran","Pencemaran","Pencemaran","Pencemaran","Pencemaran",
+  "Pencemaran","Pencemaran","Pencemaran","Pencemaran","Pencemaran",
+  "Perubahan","Perubahan","Perubahan","Perubahan","Perubahan",
+  "Perubahan","Perubahan","Perubahan","Perubahan","Perubahan"
+];
+
+let cards = rawCards.map((c,i)=>({...c, id:i, cat:categories[i], mastered:false, review:false}));
+let order = cards.map((_,i)=>i);
+let idx = 0;
+let flipped = false;
+
+function render() {
+  const card = cards[order[idx]];
+  document.getElementById('cardQ').textContent = card.q;
+  document.getElementById('cardA').textContent = card.a;
+  document.getElementById('cardNum').textContent = '#' + String(idx+1).padStart(2,'0');
+  document.getElementById('cardNumBack').textContent = '#' + String(idx+1).padStart(2,'0');
+  document.getElementById('cardCat').textContent = card.cat;
+  document.getElementById('progressLabel').textContent = (idx+1) + ' / ' + order.length;
+  document.getElementById('progressPct').textContent = Math.round((idx+1)/order.length*100) + '%';
+  document.getElementById('progressFill').style.width = ((idx+1)/order.length*100) + '%';
+  document.getElementById('statMastered').textContent = cards.filter(c=>c.mastered).length;
+  document.getElementById('statReview').textContent = cards.filter(c=>c.review).length;
+  document.getElementById('statRemaining').textContent = cards.filter(c=>!c.mastered).length;
+  const catEl = document.getElementById('cardCat');
+  if(card.mastered) { catEl.textContent = card.cat + ' '; catEl.innerHTML += '<span class="badge badge-mastered">HAFA</span>'; }
+  else if(card.review) { catEl.textContent = card.cat + ' '; catEl.innerHTML += '<span class="badge badge-review">REVIEW</span>'; }
+}
+
+function flipCard() {
+  flipped = !flipped;
+  document.getElementById('card').classList.toggle('is-flipped', flipped);
+}
+
+function nextCard() {
+  if(idx < order.length-1) { idx++; flipped=false; document.getElementById('card').classList.remove('is-flipped'); render(); }
+  else { showOverlay(); }
+}
+
+function prevCard() {
+  if(idx > 0) { idx--; flipped=false; document.getElementById('card').classList.remove('is-flipped'); render(); }
+}
+
+function markMastered() {
+  cards[order[idx]].mastered = true; cards[order[idx]].review = false; render();
+  const btn = document.querySelector('.btn-success'); btn.style.transform='scale(1.1)'; setTimeout(()=>btn.style.transform='',150);
+}
+
+function markReview() {
+  cards[order[idx]].review = true; cards[order[idx]].mastered = false; render();
+  const btn = document.querySelector('.btn-danger'); btn.style.transform='scale(1.1)'; setTimeout(()=>btn.style.transform='',150);
+}
+
+function shuffleCards() {
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  idx=0; flipped=false; document.getElementById('card').classList.remove('is-flipped'); render();
+}
+
+function showOverlay() {
+  const mastered = cards.filter(c=>c.mastered).length;
+  const review = cards.filter(c=>c.review).length;
+  const msg = mastered === cards.length ? 'Semua kartu sudah kamu hafal. Kerja bagus!' : `Hafal: <b>${mastered}</b> | Perlu review: <b>${review}</b>. Kartu yang belum ditandai bisa kamu ulangi.`;
+  document.getElementById('overlayMsg').innerHTML = msg;
+  document.getElementById('overlay').classList.add('active');
+}
+
+function closeOverlay() { document.getElementById('overlay').classList.remove('active'); }
+
+function resetSession() {
+  cards.forEach(c=>{c.mastered=false; c.review=false;});
+  order = cards.map((_,i)=>i); idx=0; flipped=false;
+  document.getElementById('card').classList.remove('is-flipped');
+  closeOverlay(); render();
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key===' '||e.key==='Enter'){ e.preventDefault(); flipCard(); }
+  else if(e.key==='ArrowRight') nextCard();
+  else if(e.key==='ArrowLeft') prevCard();
+  else if(e.key==='1'||e.key==='m') markMastered();
+  else if(e.key==='2'||e.key==='r') markReview();
+});
+
+render();
+</script>
+</body>
+</html>
