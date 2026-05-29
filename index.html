@@ -77,14 +77,15 @@
   }
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 <h1>Flashcard Biologi</h1>
-<div class="subtitle">Ekosistem, Pencemaran & Perubahan Lingkungan</div>
+<div class="subtitle">Ekosistem, Pencemaran & Perubahan Lingkungan — 150 Kartu</div>
 
 <div class="progress-wrap">
   <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
-  <div class="progress-text"><span id="progressLabel">1 / 50</span><span id="progressPct">2%</span></div>
+  <div class="progress-text"><span id="progressLabel">1 / 150</span><span id="progressPct">2%</span></div>
 </div>
 
 <div class="scene" id="scene" onclick="flipCard()">
@@ -114,7 +115,7 @@
 <div class="stats">
   <div class="stat">Hafal: <span id="statMastered">0</span></div>
   <div class="stat">Review: <span id="statReview">0</span></div>
-  <div class="stat">Sisa: <span id="statRemaining">50</span></div>
+  <div class="stat">Sisa: <span id="statRemaining">150</span></div>
 </div>
 
 <div class="overlay" id="overlay">
@@ -127,19 +128,760 @@
 </div>
 
 <script>
-const rawCards = [{"q": "Apa yang dimaksud ekosistem?", "a": "Hubungan timbal balik antara makhluk hidup dengan lingkungan biotik dan abiotiknya."}, {"q": "Apa perbedaan biotik dan abiotik?", "a": "Biotik = makhluk hidup. Abiotik = benda tak hidup."}, {"q": "Contoh komponen abiotik?", "a": "Air, cahaya matahari, suhu, tanah, pH, oksigen."}, {"q": "Apa itu produsen?", "a": "Organisme autotrof yang membuat makanan sendiri melalui fotosintesis."}, {"q": "Contoh produsen?", "a": "Tumbuhan hijau dan fitoplankton."}, {"q": "Apa itu konsumen?", "a": "Organisme heterotrof yang memperoleh makanan dari organisme lain."}, {"q": "Apa itu dekomposer?", "a": "Organisme pengurai sisa makhluk hidup menjadi zat anorganik."}, {"q": "Contoh dekomposer?", "a": "Bakteri dan jamur."}, {"q": "Apa itu detritivor?", "a": "Organisme pemakan sisa-sisa organisme mati."}, {"q": "Contoh detritivor?", "a": "Cacing tanah dan rayap."}, {"q": "Apa itu populasi?", "a": "Sekumpulan individu sejenis di suatu tempat tertentu."}, {"q": "Apa itu komunitas?", "a": "Kumpulan berbagai populasi yang saling berinteraksi."}, {"q": "Apa itu biom?", "a": "Kumpulan ekosistem luas dengan iklim dan organisme khas."}, {"q": "Contoh biom?", "a": "Savana, tundra, gurun, hutan hujan tropis."}, {"q": "Apa yang dimaksud habitat?", "a": "Tempat hidup alami suatu organisme."}, {"q": "Apa itu relung (niche)?", "a": "Peran atau fungsi organisme dalam ekosistem."}, {"q": "Apa itu rantai makanan?", "a": "Proses perpindahan energi melalui makan dan dimakan."}, {"q": "Apa urutan rantai makanan?", "a": "Produsen → Konsumen → Pengurai."}, {"q": "Apa itu jaring-jaring makanan?", "a": "Gabungan beberapa rantai makanan yang saling berhubungan."}, {"q": "Mengapa energi makin berkurang pada tingkat trofik lebih tinggi?", "a": "Karena energi digunakan untuk aktivitas dan hilang sebagai panas."}, {"q": "Apa itu pencemaran lingkungan?", "a": "Masuknya zat pencemar yang menurunkan kualitas lingkungan."}, {"q": "Apa itu polutan?", "a": "Zat penyebab pencemaran."}, {"q": "Apa itu limbah biodegradable?", "a": "Limbah yang mudah diuraikan mikroorganisme."}, {"q": "Contoh limbah biodegradable?", "a": "Sisa makanan dan daun."}, {"q": "Apa itu limbah nonbiodegradable?", "a": "Limbah yang sulit diuraikan."}, {"q": "Contoh limbah nonbiodegradable?", "a": "Plastik dan logam berat."}, {"q": "Penyebab pencemaran air?", "a": "Limbah rumah tangga, industri, pupuk, dan pestisida."}, {"q": "Dampak pencemaran air?", "a": "Kematian organisme air dan berkurangnya oksigen."}, {"q": "Apa itu eutrofikasi?", "a": "Ledakan pertumbuhan alga akibat kelebihan nitrat dan fosfat."}, {"q": "Dampak eutrofikasi?", "a": "Oksigen air berkurang dan ikan mati."}, {"q": "Penyebab pencemaran udara?", "a": "Asap kendaraan, industri, dan pembakaran bahan bakar fosil."}, {"q": "Apa dampak karbon monoksida (CO)?", "a": "Menghambat pengikatan oksigen oleh darah."}, {"q": "Apa dampak sulfur dioksida (SO₂)?", "a": "Menyebabkan hujan asam."}, {"q": "Apa fungsi lapisan ozon?", "a": "Melindungi bumi dari sinar ultraviolet."}, {"q": "Zat perusak ozon?", "a": "CFC (klorofluorokarbon)."}, {"q": "Apa penyebab efek rumah kaca?", "a": "Peningkatan gas CO₂ di atmosfer."}, {"q": "Dampak efek rumah kaca?", "a": "Pemanasan global."}, {"q": "Penyebab pencemaran tanah?", "a": "Sampah, pestisida, dan limbah industri."}, {"q": "Apa itu remediasi?", "a": "Proses membersihkan tanah tercemar."}, {"q": "Apa manfaat daur ulang?", "a": "Mengurangi limbah dan pencemaran lingkungan."}, {"q": "Faktor manusia yang menyebabkan perubahan lingkungan?", "a": "Penebangan hutan, pertambangan, pembangunan."}, {"q": "Dampak penebangan hutan?", "a": "Banjir, longsor, hilangnya habitat."}, {"q": "Dampak pertambangan liar?", "a": "Kerusakan tanah dan pencemaran."}, {"q": "Apa itu monokultur?", "a": "Penanaman satu jenis tanaman pada lahan luas."}, {"q": "Faktor alam penyebab perubahan lingkungan?", "a": "Gempa bumi, tsunami, gunung meletus."}, {"q": "Apa itu suksesi?", "a": "Perubahan komunitas secara bertahap menuju klimaks."}, {"q": "Apa itu suksesi primer?", "a": "Suksesi pada daerah baru tanpa kehidupan sebelumnya."}, {"q": "Contoh suksesi primer?", "a": "Daerah bekas letusan gunung api."}, {"q": "Apa itu suksesi sekunder?", "a": "Suksesi pada daerah yang sebelumnya sudah dihuni."}, {"q": "Contoh suksesi sekunder?", "a": "Hutan bekas kebakaran."}];
+const rawCards = [
+  {
+    "q": "Apa yang dimaksud ekosistem?",
+    "a": "Hubungan timbal balik antara makhluk hidup dengan lingkungan biotik dan abiotiknya."
+  },
+  {
+    "q": "Apa perbedaan biotik dan abiotik?",
+    "a": "Biotik = makhluk hidup. Abiotik = benda tak hidup."
+  },
+  {
+    "q": "Contoh komponen abiotik?",
+    "a": "Air, cahaya matahari, suhu, tanah, pH, oksigen."
+  },
+  {
+    "q": "Apa itu produsen?",
+    "a": "Organisme autotrof yang membuat makanan sendiri melalui fotosintesis."
+  },
+  {
+    "q": "Contoh produsen?",
+    "a": "Tumbuhan hijau dan fitoplankton."
+  },
+  {
+    "q": "Apa itu konsumen?",
+    "a": "Organisme heterotrof yang memperoleh makanan dari organisme lain."
+  },
+  {
+    "q": "Apa itu dekomposer?",
+    "a": "Organisme pengurai sisa makhluk hidup menjadi zat anorganik."
+  },
+  {
+    "q": "Contoh dekomposer?",
+    "a": "Bakteri dan jamur."
+  },
+  {
+    "q": "Apa itu detritivor?",
+    "a": "Organisme pemakan sisa-sisa organisme mati."
+  },
+  {
+    "q": "Contoh detritivor?",
+    "a": "Cacing tanah dan rayap."
+  },
+  {
+    "q": "Apa itu populasi?",
+    "a": "Sekumpulan individu sejenis di suatu tempat tertentu."
+  },
+  {
+    "q": "Apa itu komunitas?",
+    "a": "Kumpulan berbagai populasi yang saling berinteraksi."
+  },
+  {
+    "q": "Apa itu biom?",
+    "a": "Kumpulan ekosistem luas dengan iklim dan organisme khas."
+  },
+  {
+    "q": "Contoh biom?",
+    "a": "Savana, tundra, gurun, hutan hujan tropis."
+  },
+  {
+    "q": "Apa yang dimaksud habitat?",
+    "a": "Tempat hidup alami suatu organisme."
+  },
+  {
+    "q": "Apa itu relung (niche)?",
+    "a": "Peran atau fungsi organisme dalam ekosistem."
+  },
+  {
+    "q": "Apa itu rantai makanan?",
+    "a": "Proses perpindahan energi melalui makan dan dimakan."
+  },
+  {
+    "q": "Apa urutan rantai makanan?",
+    "a": "Produsen → Konsumen → Pengurai."
+  },
+  {
+    "q": "Apa itu jaring-jaring makanan?",
+    "a": "Gabungan beberapa rantai makanan yang saling berhubungan."
+  },
+  {
+    "q": "Mengapa energi makin berkurang pada tingkat trofik lebih tinggi?",
+    "a": "Karena energi digunakan untuk aktivitas dan hilang sebagai panas."
+  },
+  {
+    "q": "Apa itu pencemaran lingkungan?",
+    "a": "Masuknya zat pencemar yang menurunkan kualitas lingkungan."
+  },
+  {
+    "q": "Apa itu polutan?",
+    "a": "Zat penyebab pencemaran."
+  },
+  {
+    "q": "Apa itu limbah biodegradable?",
+    "a": "Limbah yang mudah diuraikan mikroorganisme."
+  },
+  {
+    "q": "Contoh limbah biodegradable?",
+    "a": "Sisa makanan dan daun."
+  },
+  {
+    "q": "Apa itu limbah nonbiodegradable?",
+    "a": "Limbah yang sulit diuraikan."
+  },
+  {
+    "q": "Contoh limbah nonbiodegradable?",
+    "a": "Plastik dan logam berat."
+  },
+  {
+    "q": "Penyebab pencemaran air?",
+    "a": "Limbah rumah tangga, industri, pupuk, dan pestisida."
+  },
+  {
+    "q": "Dampak pencemaran air?",
+    "a": "Kematian organisme air dan berkurangnya oksigen."
+  },
+  {
+    "q": "Apa itu eutrofikasi?",
+    "a": "Ledakan pertumbuhan alga akibat kelebihan nitrat dan fosfat."
+  },
+  {
+    "q": "Dampak eutrofikasi?",
+    "a": "Oksigen air berkurang dan ikan mati."
+  },
+  {
+    "q": "Penyebab pencemaran udara?",
+    "a": "Asap kendaraan, industri, dan pembakaran bahan bakar fosil."
+  },
+  {
+    "q": "Apa dampak karbon monoksida (CO)?",
+    "a": "Menghambat pengikatan oksigen oleh darah."
+  },
+  {
+    "q": "Apa dampak sulfur dioksida (SO₂)?",
+    "a": "Menyebabkan hujan asam."
+  },
+  {
+    "q": "Apa fungsi lapisan ozon?",
+    "a": "Melindungi bumi dari sinar ultraviolet."
+  },
+  {
+    "q": "Zat perusak ozon?",
+    "a": "CFC (klorofluorokarbon)."
+  },
+  {
+    "q": "Apa penyebab efek rumah kaca?",
+    "a": "Peningkatan gas CO₂ di atmosfer."
+  },
+  {
+    "q": "Dampak efek rumah kaca?",
+    "a": "Pemanasan global."
+  },
+  {
+    "q": "Penyebab pencemaran tanah?",
+    "a": "Sampah, pestisida, dan limbah industri."
+  },
+  {
+    "q": "Apa itu remediasi?",
+    "a": "Proses membersihkan tanah tercemar."
+  },
+  {
+    "q": "Apa manfaat daur ulang?",
+    "a": "Mengurangi limbah dan pencemaran lingkungan."
+  },
+  {
+    "q": "Faktor manusia yang menyebabkan perubahan lingkungan?",
+    "a": "Penebangan hutan, pertambangan, pembangunan."
+  },
+  {
+    "q": "Dampak penebangan hutan?",
+    "a": "Banjir, longsor, hilangnya habitat."
+  },
+  {
+    "q": "Dampak pertambangan liar?",
+    "a": "Kerusakan tanah dan pencemaran."
+  },
+  {
+    "q": "Apa itu monokultur?",
+    "a": "Penanaman satu jenis tanaman pada lahan luas."
+  },
+  {
+    "q": "Faktor alam penyebab perubahan lingkungan?",
+    "a": "Gempa bumi, tsunami, gunung meletus."
+  },
+  {
+    "q": "Apa itu suksesi?",
+    "a": "Perubahan komunitas secara bertahap menuju klimaks."
+  },
+  {
+    "q": "Apa itu suksesi primer?",
+    "a": "Suksesi pada daerah baru tanpa kehidupan sebelumnya."
+  },
+  {
+    "q": "Contoh suksesi primer?",
+    "a": "Daerah bekas letusan gunung api."
+  },
+  {
+    "q": "Apa itu suksesi sekunder?",
+    "a": "Suksesi pada daerah yang sebelumnya sudah dihuni."
+  },
+  {
+    "q": "Contoh suksesi sekunder?",
+    "a": "Hutan bekas kebakaran."
+  },
+  {
+    "q": "Apa fungsi cahaya matahari dalam ekosistem?",
+    "a": "Sebagai sumber energi utama untuk fotosintesis."
+  },
+  {
+    "q": "Mengapa air penting bagi makhluk hidup?",
+    "a": "Sebagai pelarut dan tempat berlangsungnya reaksi metabolisme."
+  },
+  {
+    "q": "Apa pengaruh suhu terhadap organisme?",
+    "a": "Menentukan aktivitas dan metabolisme organisme."
+  },
+  {
+    "q": "Apa yang dimaksud salinitas?",
+    "a": "Kadar garam dalam air."
+  },
+  {
+    "q": "Ekosistem air dibedakan menjadi apa saja berdasarkan salinitas?",
+    "a": "Air tawar, air laut, dan air payau."
+  },
+  {
+    "q": "Apa ciri organisme autotrof?",
+    "a": "Dapat membuat makanan sendiri."
+  },
+  {
+    "q": "Apa itu fotoautotrof?",
+    "a": "Organisme yang membuat makanan dengan bantuan cahaya."
+  },
+  {
+    "q": "Contoh organisme fotoautotrof?",
+    "a": "Tumbuhan hijau."
+  },
+  {
+    "q": "Apa itu kemoautotrof?",
+    "a": "Organisme yang membuat makanan menggunakan energi kimia."
+  },
+  {
+    "q": "Apa yang dimaksud herbivor?",
+    "a": "Konsumen pemakan tumbuhan."
+  },
+  {
+    "q": "Apa yang dimaksud karnivor?",
+    "a": "Konsumen pemakan hewan lain."
+  },
+  {
+    "q": "Apa yang dimaksud omnivor?",
+    "a": "Organisme pemakan tumbuhan dan hewan."
+  },
+  {
+    "q": "Apa fungsi pengurai dalam ekosistem?",
+    "a": "Mengembalikan unsur hara ke lingkungan."
+  },
+  {
+    "q": "Apa yang dimaksud tingkat trofik?",
+    "a": "Posisi organisme dalam rantai makanan."
+  },
+  {
+    "q": "Tingkat trofik pertama ditempati oleh?",
+    "a": "Produsen."
+  },
+  {
+    "q": "Mengapa produsen jumlahnya paling banyak?",
+    "a": "Karena menjadi sumber energi utama bagi tingkat trofik lain."
+  },
+  {
+    "q": "Apa yang dimaksud biomassa?",
+    "a": "Massa total organisme pada suatu tingkat trofik."
+  },
+  {
+    "q": "Apa kelebihan piramida energi?",
+    "a": "Menunjukkan aliran energi secara lebih akurat."
+  },
+  {
+    "q": "Apa kelemahan piramida jumlah?",
+    "a": "Tidak memperhatikan ukuran organisme."
+  },
+  {
+    "q": "Apa yang dimaksud ekosistem klimaks?",
+    "a": "Ekosistem stabil hasil akhir suksesi."
+  },
+  {
+    "q": "Organisme pertama pada suksesi disebut?",
+    "a": "Organisme perintis."
+  },
+  {
+    "q": "Contoh organisme perintis?",
+    "a": "Lumut kerak dan ganggang."
+  },
+  {
+    "q": "Mengapa lumut kerak dapat hidup di daerah tandus?",
+    "a": "Karena mampu bertahan di kondisi ekstrem."
+  },
+  {
+    "q": "Apa yang dimaksud ekosistem alami?",
+    "a": "Ekosistem yang terbentuk tanpa campur tangan manusia."
+  },
+  {
+    "q": "Contoh ekosistem alami?",
+    "a": "Hutan dan laut."
+  },
+  {
+    "q": "Apa itu ekosistem buatan?",
+    "a": "Ekosistem yang dibuat manusia."
+  },
+  {
+    "q": "Contoh ekosistem buatan?",
+    "a": "Sawah dan akuarium."
+  },
+  {
+    "q": "Apa ciri hutan mangrove?",
+    "a": "Tumbuh di daerah pantai berlumpur dan air payau."
+  },
+  {
+    "q": "Fungsi hutan mangrove?",
+    "a": "Mencegah abrasi pantai."
+  },
+  {
+    "q": "Apa yang dimaksud respirasi?",
+    "a": "Proses pembebasan energi dari makanan."
+  },
+  {
+    "q": "Gas yang diperlukan untuk respirasi?",
+    "a": "Oksigen (O₂)."
+  },
+  {
+    "q": "Gas yang dihasilkan respirasi?",
+    "a": "Karbon dioksida (CO₂)."
+  },
+  {
+    "q": "Apa fungsi fotosintesis dalam daur oksigen?",
+    "a": "Menghasilkan oksigen."
+  },
+  {
+    "q": "Apa fungsi bakteri Rhizobium?",
+    "a": "Mengikat nitrogen bebas dari udara."
+  },
+  {
+    "q": "Tanaman apa yang bersimbiosis dengan Rhizobium?",
+    "a": "Tanaman polong-polongan."
+  },
+  {
+    "q": "Apa itu hujan asam?",
+    "a": "Hujan dengan kandungan asam tinggi akibat polusi udara."
+  },
+  {
+    "q": "Gas penyebab utama hujan asam?",
+    "a": "Sulfur dioksida dan nitrogen oksida."
+  },
+  {
+    "q": "Apa itu smog?",
+    "a": "Kabut asap akibat pencemaran udara."
+  },
+  {
+    "q": "Apa dampak smog bagi kesehatan?",
+    "a": "Gangguan pernapasan."
+  },
+  {
+    "q": "Apa yang dimaksud BOD?",
+    "a": "Kebutuhan oksigen biologis untuk menguraikan bahan organik."
+  },
+  {
+    "q": "Mengapa BOD tinggi berbahaya?",
+    "a": "Mengurangi oksigen terlarut dalam air."
+  },
+  {
+    "q": "Apa dampak kekurangan oksigen di air?",
+    "a": "Ikan dan organisme air mati."
+  },
+  {
+    "q": "Mengapa plastik berbahaya bagi lingkungan?",
+    "a": "Sulit terurai secara alami."
+  },
+  {
+    "q": "Apa tujuan daur ulang?",
+    "a": "Mengurangi jumlah limbah."
+  },
+  {
+    "q": "Apa contoh limbah organik?",
+    "a": "Sisa sayur dan daun."
+  },
+  {
+    "q": "Apa contoh limbah anorganik?",
+    "a": "Botol plastik dan kaca."
+  },
+  {
+    "q": "Apa yang dimaksud konservasi lingkungan?",
+    "a": "Upaya menjaga dan melestarikan lingkungan."
+  },
+  {
+    "q": "Apa cara edukatif menjaga lingkungan?",
+    "a": "Penyuluhan dan pendidikan lingkungan."
+  },
+  {
+    "q": "Apa cara teknologis mengurangi pencemaran?",
+    "a": "Mengolah limbah sebelum dibuang."
+  },
+  {
+    "q": "Apa tujuan pelestarian lingkungan?",
+    "a": "Menjaga keseimbangan ekosistem agar tetap lestari."
+  },
+  {
+    "q": "Apa yang dimaksud ekosistem akuatik?",
+    "a": "Ekosistem yang lingkungan utamanya berupa air."
+  },
+  {
+    "q": "Apa yang dimaksud ekosistem terestrial?",
+    "a": "Ekosistem yang berada di daratan."
+  },
+  {
+    "q": "Apa contoh ekosistem air tawar?",
+    "a": "Sungai, kolam, danau."
+  },
+  {
+    "q": "Apa contoh ekosistem laut?",
+    "a": "Laut dangkal dan laut dalam."
+  },
+  {
+    "q": "Apa ciri utama ekosistem gurun?",
+    "a": "Curah hujan sangat rendah."
+  },
+  {
+    "q": "Apa ciri hutan hujan tropis?",
+    "a": "Curah hujan tinggi dan keanekaragaman hayati tinggi."
+  },
+  {
+    "q": "Apa yang dimaksud interaksi antarpopulasi?",
+    "a": "Hubungan antara populasi satu dengan lainnya."
+  },
+  {
+    "q": "Apa itu simbiosis mutualisme?",
+    "a": "Hubungan saling menguntungkan."
+  },
+  {
+    "q": "Contoh mutualisme?",
+    "a": "Lebah dan bunga."
+  },
+  {
+    "q": "Apa itu simbiosis parasitisme?",
+    "a": "Hubungan satu untung dan satu dirugikan."
+  },
+  {
+    "q": "Contoh parasitisme?",
+    "a": "Benalu pada pohon mangga."
+  },
+  {
+    "q": "Apa itu komensalisme?",
+    "a": "Hubungan satu untung dan yang lain tidak dirugikan."
+  },
+  {
+    "q": "Contoh komensalisme?",
+    "a": "Anggrek pada pohon besar."
+  },
+  {
+    "q": "Apa yang dimaksud kompetisi?",
+    "a": "Persaingan antarorganisme untuk mendapatkan sumber daya."
+  },
+  {
+    "q": "Faktor apa yang memengaruhi pertumbuhan populasi?",
+    "a": "Kelahiran, kematian, imigrasi, emigrasi."
+  },
+  {
+    "q": "Apa yang dimaksud natalitas?",
+    "a": "Tingkat kelahiran dalam populasi."
+  },
+  {
+    "q": "Apa yang dimaksud mortalitas?",
+    "a": "Tingkat kematian dalam populasi."
+  },
+  {
+    "q": "Apa itu imigrasi?",
+    "a": "Masuknya individu ke suatu populasi."
+  },
+  {
+    "q": "Apa itu emigrasi?",
+    "a": "Keluarnya individu dari suatu populasi."
+  },
+  {
+    "q": "Apa fungsi karbon dioksida bagi tumbuhan?",
+    "a": "Bahan baku fotosintesis."
+  },
+  {
+    "q": "Apa fungsi oksigen bagi hewan?",
+    "a": "Untuk respirasi."
+  },
+  {
+    "q": "Apa pengaruh pH terhadap organisme?",
+    "a": "Memengaruhi proses metabolisme dan kehidupan organisme."
+  },
+  {
+    "q": "Apa dampak pestisida berlebihan?",
+    "a": "Mencemari tanah dan air."
+  },
+  {
+    "q": "Apa yang dimaksud limbah industri?",
+    "a": "Sisa hasil kegiatan industri yang dibuang."
+  },
+  {
+    "q": "Apa yang dimaksud limbah rumah tangga?",
+    "a": "Sampah atau sisa aktivitas rumah tangga."
+  },
+  {
+    "q": "Mengapa logam berat berbahaya?",
+    "a": "Bersifat racun dan sulit terurai."
+  },
+  {
+    "q": "Contoh logam berat pencemar?",
+    "a": "Merkuri dan timbal."
+  },
+  {
+    "q": "Apa dampak merkuri bagi manusia?",
+    "a": "Merusak sistem saraf."
+  },
+  {
+    "q": "Apa sumber utama karbon monoksida?",
+    "a": "Asap kendaraan bermotor."
+  },
+  {
+    "q": "Apa ciri udara tercemar?",
+    "a": "Mengandung polutan dalam kadar tinggi."
+  },
+  {
+    "q": "Apa dampak pencemaran udara terhadap tumbuhan?",
+    "a": "Menghambat fotosintesis."
+  },
+  {
+    "q": "Apa penyebab utama pemanasan global?",
+    "a": "Peningkatan gas rumah kaca."
+  },
+  {
+    "q": "Apa contoh gas rumah kaca?",
+    "a": "CO₂ dan metana."
+  },
+  {
+    "q": "Apa dampak pemanasan global bagi bumi?",
+    "a": "Perubahan iklim dan kenaikan suhu."
+  },
+  {
+    "q": "Apa yang dimaksud abrasi?",
+    "a": "Pengikisan pantai oleh gelombang laut."
+  },
+  {
+    "q": "Apa fungsi hutan bagi lingkungan?",
+    "a": "Menyimpan air dan menjaga keseimbangan ekosistem."
+  },
+  {
+    "q": "Mengapa penambangan liar berbahaya?",
+    "a": "Merusak tanah dan ekosistem."
+  },
+  {
+    "q": "Apa dampak hilangnya humus tanah?",
+    "a": "Tanah menjadi tandus."
+  },
+  {
+    "q": "Apa fungsi humus?",
+    "a": "Menyuburkan tanah."
+  },
+  {
+    "q": "Apa dampak pembangunan perumahan berlebihan?",
+    "a": "Berkurangnya lahan hijau."
+  },
+  {
+    "q": "Apa yang dimaksud intensifikasi pertanian?",
+    "a": "Usaha meningkatkan hasil pertanian."
+  },
+  {
+    "q": "Apa dampak sistem monokultur?",
+    "a": "Menurunkan keanekaragaman hayati."
+  },
+  {
+    "q": "Apa itu biodegradasi?",
+    "a": "Penguraian zat oleh mikroorganisme."
+  },
+  {
+    "q": "Mengapa sampah organik mudah terurai?",
+    "a": "Karena dapat diuraikan mikroorganisme."
+  },
+  {
+    "q": "Apa manfaat kompos?",
+    "a": "Menambah unsur hara tanah."
+  },
+  {
+    "q": "Apa yang dimaksud limbah cair?",
+    "a": "Limbah berbentuk cair hasil aktivitas manusia."
+  },
+  {
+    "q": "Apa fungsi instalasi pengolahan limbah?",
+    "a": "Mengurangi pencemaran sebelum limbah dibuang."
+  },
+  {
+    "q": "Apa itu pencemaran langsung?",
+    "a": "Pencemaran yang langsung masuk ke lingkungan."
+  },
+  {
+    "q": "Apa itu pencemaran tidak langsung?",
+    "a": "Pencemaran melalui rembesan atau perantara."
+  },
+  {
+    "q": "Mengapa menjaga lingkungan penting?",
+    "a": "Agar keseimbangan ekosistem dan kehidupan tetap terjaga."
+  }
+];
 
 const categories = [
-  "Ekosistem","Ekosistem","Ekosistem","Ekosistem","Ekosistem",
-  "Ekosistem","Ekosistem","Ekosistem","Ekosistem","Ekosistem",
-  "Ekosistem","Ekosistem","Ekosistem","Ekosistem","Ekosistem",
-  "Ekosistem","Ekosistem","Ekosistem","Ekosistem","Ekosistem",
-  "Pencemaran","Pencemaran","Pencemaran","Pencemaran","Pencemaran",
-  "Pencemaran","Pencemaran","Pencemaran","Pencemaran","Pencemaran",
-  "Pencemaran","Pencemaran","Pencemaran","Pencemaran","Pencemaran",
-  "Pencemaran","Pencemaran","Pencemaran","Pencemaran","Pencemaran",
-  "Perubahan","Perubahan","Perubahan","Perubahan","Perubahan",
-  "Perubahan","Perubahan","Perubahan","Perubahan","Perubahan"
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Ekosistem",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Perubahan",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Pencemaran",
+  "Perubahan"
 ];
 
 let cards = rawCards.map((c,i)=>({...c, id:i, cat:categories[i], mastered:false, review:false}));
